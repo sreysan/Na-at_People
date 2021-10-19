@@ -6,4 +6,6 @@
     <string name="label_notifications">Notificaciones</string>
     <string name="label_home">Home</string>
     <string name="label_activities">Actividad</string>
+    <string name="label_show_news">VER NOTICIA</string>
+
 </resources>

@@ -22,5 +22,8 @@ class HomeActivity : AppCompatActivity() {
         val navigationController = findNavController(R.id.fragment_navigation_host)
 
         navigationView.setupWithNavController(navigationController)
+
+
+
     }
 }

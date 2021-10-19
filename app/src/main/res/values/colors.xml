@@ -13,4 +13,6 @@
 
     <color name="gradient_start">#FF8355</color>
     <color name="gradient_end">#FF4485</color>
+    <color name="black_333333">#333333</color>
+    <color name="gray_9B9B9B">#9B9B9B</color>
 </resources>
