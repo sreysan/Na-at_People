@@ -1,6 +1,7 @@
 package mx.com.na_at.hsolano.na_atpeople.view.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
@@ -10,6 +11,7 @@ import mx.com.na_at.hsolano.na_atpeople.R
 
 class HomeActivity : AppCompatActivity() {
 
+    lateinit var footerLayout: ConstraintLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -19,7 +21,15 @@ class HomeActivity : AppCompatActivity() {
 
         navigationView.setupWithNavController(navigationController)
 
-        val footerLayout = findViewById<ConstraintLayout>(R.id.constraint_layout_footer)
+        footerLayout = findViewById(R.id.constraint_layout_footer)
 
+    }
+
+    fun onCollapseToolbar() {
+        footerLayout.visibility = View.GONE
+    }
+
+    fun onExpandToolbar(){
+        footerLayout.visibility = View.VISIBLE
     }
 }

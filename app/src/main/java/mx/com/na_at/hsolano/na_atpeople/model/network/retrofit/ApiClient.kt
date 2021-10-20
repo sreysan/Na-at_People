@@ -8,18 +8,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ApiClient {
 
     companion object {
-        fun getRetrofitClient(): Retrofit {
+        private fun getRetrofitClient(urlBase: String): Retrofit {
+            return Retrofit.Builder()
+                .baseUrl(urlBase)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(buildHttpClient()).build()
+        }
+
+        private fun buildHttpClient(): OkHttpClient {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
-            val client = OkHttpClient.Builder()
+            return OkHttpClient.Builder()
                 .addInterceptor(interceptor).build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl("https://demo6074034.mockable.io/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-
-            return retrofit.build()
         }
+
+        fun buildApiService(urlBase: String): ApiService =
+            getRetrofitClient(urlBase).create(ApiService::class.java)
+
     }
 }

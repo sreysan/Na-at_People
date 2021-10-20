@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.News
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NewsEvents
 
-class NewsAdapter(var news: List<News>) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter(var news: List<News>, private val listener: NewsEvents) :
+    RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.cardview_news_item, parent, false)
@@ -19,7 +22,10 @@ class NewsAdapter(var news: List<News>) : RecyclerView.Adapter<NewsAdapter.ViewH
         val post = news[position]
         holder.tvTitle.text = post.title
         holder.tvDate.text = post.publishDate
-        //holder.tvSummary.text = post.summary
+        holder.tvSummary.text = post.summary
+        holder.tvShowDetail.setOnClickListener {
+            listener.onNewsClickListener(post.id)
+        }
     }
 
     override fun getItemCount(): Int {

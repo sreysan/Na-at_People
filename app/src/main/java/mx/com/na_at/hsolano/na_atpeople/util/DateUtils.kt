@@ -10,7 +10,15 @@ class DateUtils {
             sdf.timeZone = TimeZone.getTimeZone("UTC")
             val localTime = sdf.parse(newsDate) ?: Date()
             val newDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(localTime)
+            formatDateTime(newsDate)
+            return newDate.toString()
+        }
 
+        fun formatDateTime(newsDate: String): String {
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val localTime = sdf.parse(newsDate) ?: Date()
+            val newDate = SimpleDateFormat("dd/MM/yyyy | HH:mm", Locale.getDefault()).format(localTime)
             return newDate.toString()
         }
     }

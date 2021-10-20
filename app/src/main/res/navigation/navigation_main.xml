@@ -14,10 +14,18 @@
         android:id="@+id/newsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NewsFragment"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_newsFragment_to_newsDetailFragment"
+            app:destination="@id/newsDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NotificationsFragment"
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/newsDetailFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NewsDetailFragment"
+        android:label="NewsDetailFragment" />
 </navigation>

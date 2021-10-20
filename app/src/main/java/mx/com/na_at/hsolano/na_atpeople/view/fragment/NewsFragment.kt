@@ -7,17 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NewsRepository
+import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.NewsAdapter
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NewsEvents
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModel
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModelFactory
 
-class NewsFragment : Fragment() {
+class NewsFragment : Fragment(), NewsEvents {
 
     private lateinit var newsViewModel: NewsViewModel
+    private val POST_ID = "POST_ID"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,10 +49,24 @@ class NewsFragment : Fragment() {
         newsViewModel.requestGetAllNews()
 
         newsViewModel.news.observe(viewLifecycleOwner, { news ->
-            val adapter = NewsAdapter(news)
+            val adapter = NewsAdapter(news, this)
             rvNews.layoutManager = LinearLayoutManager(context)
             rvNews.adapter = adapter
         })
     }
 
+    override fun onNewsClickListener(postId: String) {
+        //action_newsFragment_to_newsDetail
+        val navHostFragment =
+            activity?.supportFragmentManager?.findFragmentById(R.id.fragment_navigation_host) as NavHostFragment
+        val navController = navHostFragment.navController
+        val bundle = Bundle()
+        bundle.putString(POST_ID, postId)
+        navController.navigate(R.id.action_newsFragment_to_newsDetailFragment, bundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as HomeActivity).onExpandToolbar()
+    }
 }
