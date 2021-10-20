@@ -1,14 +1,16 @@
 package mx.com.na_at.hsolano.na_atpeople.util
 
 import java.text.SimpleDateFormat
+import java.util.*
 
 class DateUtils {
     companion object {
-        //TODO MODIFY FORMATTED DATE
-        fun formatDate(newsDate: String): String {
-            val sdf = SimpleDateFormat("yyyy-MM-dd")
-            val currentDate = sdf.parse(newsDate.substring(0, 10))
-            val newDate = SimpleDateFormat("dd/MM/yyyy").format(currentDate)
+        fun formatUtcDate(newsDate: String): String {
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val localTime = sdf.parse(newsDate) ?: Date()
+            val newDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(localTime)
+
             return newDate.toString()
         }
     }

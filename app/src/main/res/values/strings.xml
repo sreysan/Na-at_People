@@ -7,5 +7,7 @@
     <string name="label_home">Home</string>
     <string name="label_activities">Actividad</string>
     <string name="label_show_news">VER NOTICIA</string>
+    <string name="label_logout"><u>Cerrar sesión</u></string>
+    <string name="label_register_hours">+ Registrar horas</string>
 
 </resources>

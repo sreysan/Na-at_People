@@ -22,7 +22,7 @@ class NewsRepository {
                 if (response.isSuccessful) {
                     response.body()?.let { news ->
                         for (post in news) {
-                            post.publishDate = DateUtils.formatDate(post.publishDate)
+                            post.publishDate = DateUtils.formatUtcDate(post.publishDate)
                         }
                         allNews.value = news
                     }
