@@ -58,7 +58,7 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
             RegisterActivityViewModel::class.java
         )
 
-        viewModel.getProjectsByClientId(idClient)
+        viewModel.requestGetProjectsByClientId(idClient)
         viewModel.projects.observe(viewLifecycleOwner, {
             rvProjects.adapter = RegisterActivityAdapter(it, this)
         })
@@ -69,6 +69,6 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
         val activity = (activity as HomeActivity)
         activity.setTabClientName(item.second)
         activity.bundle.putString(PROJECT_ID, item.first)
-        //activity.navigateToFragment(R.id.projectsFragment)
+        activity.navigateToFragment(R.id.action_projectsFragment_to_activitiesFragment)
     }
 }

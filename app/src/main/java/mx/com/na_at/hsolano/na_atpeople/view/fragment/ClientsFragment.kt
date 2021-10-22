@@ -43,7 +43,7 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         val rvClients = view.findViewById<RecyclerView>(R.id.recycler_view_clients)
         rvClients.layoutManager = LinearLayoutManager(context)
 
-        viewModel.getClients()
+        viewModel.requestGetAllClients()
         viewModel.clients.observe(viewLifecycleOwner, {
             rvClients.adapter = RegisterActivityAdapter(it, this)
         })
@@ -54,7 +54,7 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         val activity = (activity as HomeActivity)
         activity.setTabClientName(item.second)
         activity.bundle.putString(CLIENT_ID, item.first)
-        activity.navigateToFragment(R.id.projectsFragment)
+        activity.navigateToFragment(R.id.action_clientsFragment_to_projectsFragment)
     }
 
 }

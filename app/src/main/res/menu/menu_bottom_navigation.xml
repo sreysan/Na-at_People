@@ -13,7 +13,7 @@
         android:title="@string/label_home"/>
 
     <item
-        android:id="@+id/activitiesFragment"
+        android:id="@+id/registerActivityFragment"
         android:icon="@drawable/icon_activities"
         android:title="@string/label_activities"/>
 

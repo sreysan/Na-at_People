@@ -21,4 +21,8 @@ interface ApiService {
 
     @GET("clients/{clientId}/projects/")
     fun getProjectsByIdClient(@Path("clientId") id: String): Call<List<RegisterObjectResponse>>
+
+
+    @GET("activities")
+    fun getAllActivities(): Call<List<RegisterObjectResponse>>
 }

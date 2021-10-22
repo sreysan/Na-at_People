@@ -31,9 +31,26 @@
     <fragment
         android:id="@+id/clientsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ClientsFragment"
-        android:label="ClientsFragment" />
+        android:label="ClientsFragment" >
+        <action
+            android:id="@+id/action_clientsFragment_to_projectsFragment"
+            app:destination="@id/projectsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/projectsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ProjectsFragment"
-        android:label="ProjectsFragment" />
+        android:label="ProjectsFragment" >
+        <action
+            android:id="@+id/action_projectsFragment_to_activitiesFragment"
+            app:destination="@id/activitiesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerActivityFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.RegisterActivityFragment"
+        android:label="fragment_register_activity_main"
+        tools:layout="@layout/fragment_register_activity_main" >
+        <action
+            android:id="@+id/action_registerActivityFragment_to_clientsFragment"
+            app:destination="@id/clientsFragment" />
+    </fragment>
 </navigation>
