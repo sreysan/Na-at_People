@@ -7,6 +7,85 @@
     android:fitsSystemWindows="true"
     tools:context=".view.activity.HomeActivity">
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_tab_client"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="-15dp"
+        android:background="@drawable/shape_toolbar"
+        android:backgroundTint="@color/gray_F2F2F2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout_tab_date">
+
+        <TextView
+            android:id="@+id/text_view_label_client"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:text="@string/label_client"
+            android:textSize="16sp"
+            android:textColor="@color/gray_A6A6A6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_client_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:textColor="@color/black_333333"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_modify_client"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/label_modify_client"
+            android:textSize="15sp"
+            android:textColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_layout_tab_date"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="-15dp"
+        android:background="@drawable/shape_toolbar"
+        android:backgroundTint="@color/gray_9B9B9B"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout_toolbar">
+
+
+        <TextView
+            android:id="@+id/text_view_tab_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="15dp"
+            android:fontFamily="@font/nunito_sans"
+            android:gravity="bottom"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/linear_layout_toolbar"
         android:layout_width="match_parent"
@@ -29,7 +108,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/nunito_sans_semibold"
+                android:fontFamily="@font/europa_bold"
                 android:text="Hola, Daniel Frías"
                 android:textColor="@color/white"
                 android:textSize="22sp"
@@ -144,7 +223,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear_layout_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/constraint_layout_tab_client"
         app:navGraph="@navigation/navigation_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

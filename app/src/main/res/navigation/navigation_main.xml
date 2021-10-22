@@ -28,4 +28,12 @@
         android:id="@+id/newsDetailFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NewsDetailFragment"
         android:label="NewsDetailFragment" />
+    <fragment
+        android:id="@+id/clientsFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ClientsFragment"
+        android:label="ClientsFragment" />
+    <fragment
+        android:id="@+id/projectsFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ProjectsFragment"
+        android:label="ProjectsFragment" />
 </navigation>
