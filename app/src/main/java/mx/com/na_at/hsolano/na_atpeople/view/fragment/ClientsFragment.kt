@@ -32,6 +32,7 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
 
     override fun onResume() {
         (activity as HomeActivity).hideInfoTabs()
+        (activity as HomeActivity).hideDaysSinceLastRecordTab()
         super.onResume()
     }
 
@@ -39,7 +40,7 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         super.onViewCreated(view, savedInstanceState)
         val tvDate = view.findViewById<TextView>(R.id.text_view_date_selector)
 
-        tvDate.text = (activity as HomeActivity).olderDay
+        tvDate.text = (activity as HomeActivity).tvTabDate.text
         val repository = RegisterActivityRepository()
 
         val viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(

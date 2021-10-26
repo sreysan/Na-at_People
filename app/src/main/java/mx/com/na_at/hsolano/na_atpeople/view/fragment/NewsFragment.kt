@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NewsRepository
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.POST_ID
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.NewsAdapter
 import mx.com.na_at.hsolano.na_atpeople.view.contract.NewsEvents
@@ -25,8 +26,6 @@ class NewsFragment : Fragment(), NewsEvents {
 
     private lateinit var newsViewModel: NewsViewModel
     private lateinit var adapter: NewsAdapter
-    private val POST_ID = "POST_ID"
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +35,11 @@ class NewsFragment : Fragment(), NewsEvents {
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
+
+    override fun onResume() {
+        (activity as HomeActivity).showDaysSinceLastRecordTab()
+        super.onResume()
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

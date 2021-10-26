@@ -9,13 +9,12 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NewsRepository
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.POST_ID
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModel
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModelFactory
 
 class NewsDetailFragment : Fragment() {
-
-    private val POST_ID = "POST_ID"
     lateinit var newsViewModel: NewsViewModel
 
     private lateinit var postId: String
@@ -57,11 +56,6 @@ class NewsDetailFragment : Fragment() {
         })
 
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as HomeActivity).onCollapseToolbar()
     }
 
 }

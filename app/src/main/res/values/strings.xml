@@ -17,4 +17,5 @@
     <string name="label_hours_label">Horas trabajadas en el proyecto:</string>
     <string name="button_continue">Continuar</string>
     <string name="template_hours">%d horas</string>
+    <string name="template_days">Tienes %s sin reportar tus actividades</string>
 </resources>

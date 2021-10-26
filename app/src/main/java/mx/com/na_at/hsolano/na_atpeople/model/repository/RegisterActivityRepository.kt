@@ -2,8 +2,10 @@ package mx.com.na_at.hsolano.na_atpeople.model.repository
 
 import androidx.lifecycle.MutableLiveData
 import mx.com.na_at.hsolano.na_atpeople.model.ActivityHour
+import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.retrofit.ApiClient
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.DAYS_HEADER
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.DEVELOP_SERVER
 import mx.com.na_at.hsolano.na_atpeople.view.contract.*
 import retrofit2.Call
@@ -80,5 +82,30 @@ class RegisterActivityRepository {
             }
         })
     }
+
+    fun getActivityRecords(callback: GetActivityRecordsCallback) {
+        val result: Call<List<ActivityRecordResponse>> =
+            ApiClient.buildApiService(DEVELOP_SERVER).getActivityRecords()
+
+        result.enqueue(object : Callback<List<ActivityRecordResponse>> {
+            override fun onResponse(
+                call: Call<List<ActivityRecordResponse>>,
+                response: Response<List<ActivityRecordResponse>>
+            ) {
+                if (response.isSuccessful) {
+                    val days = response.headers()[DAYS_HEADER]?.toInt() ?: 0
+                    val list = response.body() as List<ActivityRecordResponse>
+                    callback.onGetActivityRecordsSuccessful(list, days)
+                }
+            }
+
+            override fun onFailure(call: Call<List<ActivityRecordResponse>>, t: Throwable) {
+                callback.onGetActivityRecordsFailure(t)
+            }
+        })
+
+
+    }
+
 
 }

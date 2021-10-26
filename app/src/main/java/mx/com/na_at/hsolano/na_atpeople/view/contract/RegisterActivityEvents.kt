@@ -1,5 +1,6 @@
 package mx.com.na_at.hsolano.na_atpeople.view.contract
 
+import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 
 interface RegisterActivityEvents {
@@ -19,6 +20,15 @@ interface GetProjectsByClientIdCallback {
 interface GetActivitiesCallback {
     fun onGetActivitiesSuccessful(activitiesResponse: List<RegisterObjectResponse>)
     fun onGetActivitiesFailure(error: Throwable)
+}
+
+interface GetActivityRecordsCallback {
+    fun onGetActivityRecordsSuccessful(
+        activityRecords: List<ActivityRecordResponse>,
+        daysSinceLastRecord: Int
+    )
+
+    fun onGetActivityRecordsFailure(error: Throwable)
 }
 
 class GetProjectsByIdError : Throwable()

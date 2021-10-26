@@ -4,36 +4,41 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.HomeViewModel
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.HomeViewModelFactory
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
 
-    lateinit var footerLayout: ConstraintLayout
-    lateinit var clientTabLayout: ConstraintLayout
+    private lateinit var clientTabLayout: ConstraintLayout
+    private lateinit var footerLayout: ConstraintLayout
     lateinit var dateTabLayout: LinearLayout
     lateinit var navigationController: NavController
     lateinit var navigationView: BottomNavigationView
 
-    private val calendars = mutableListOf<Calendar>()
-    lateinit var olderDay: String
     var bundle = Bundle()
 
-    // TODO: REPLACE WITH SERVICE VALUE
-    private val daysPending = 3
-    private lateinit var tvTabDate: TextView
+    lateinit var tvTabDate: TextView
     lateinit var tvClientName: TextView
     lateinit var tvLabelFirstTab: TextView
 
     private lateinit var loaderContainer: LinearLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +54,9 @@ class HomeActivity : AppCompatActivity() {
         tvRegisterHours.setOnClickListener {
             showClientsFragment()
         }
+        footerLayout = findViewById(R.id.constraint_layout_footer)
 
         navigationView.setupWithNavController(navigationController)
-        footerLayout = findViewById(R.id.constraint_layout_footer)
         clientTabLayout = findViewById(R.id.constraint_layout_tab_client)
         dateTabLayout = findViewById(R.id.linear_layout_tab_date)
         tvTabDate = findViewById(R.id.text_view_tab_date)
@@ -61,39 +66,44 @@ class HomeActivity : AppCompatActivity() {
         tvChangeClients.setOnClickListener {
             backToClientsView()
         }
+        val repository = RegisterActivityRepository()
 
-        handlePendingDates()
+        val viewModel = ViewModelProvider(this, HomeViewModelFactory(repository)).get(
+            HomeViewModel::class.java
+        )
+
+        viewModel.requestGetActivityRecords()
+
+        val tvDays = findViewById<TextView>(R.id.text_view_days)
+        viewModel.days.observe(this, {
+            val days = if (it == 1) "$it día" else "$it días"
+            tvDays.text = getString(R.string.template_days, days)
+        })
+
+        viewModel.emptyDays.observe(this, {
+            footerLayout.visibility = View.GONE
+        })
+
+        viewModel.olderDay.observe(this, {
+            tvTabDate.text = it
+        })
     }
 
-    fun onCollapseToolbar() {
+
+    private fun showClientsFragment() {
+        navigationView.selectedItemId = R.id.registerActivityFragment
+        navigationController.navigate(R.id.clientsFragment)
+    }
+
+    fun showDaysSinceLastRecordTab() {
+        footerLayout.visibility = View.VISIBLE
+    }
+
+    fun hideDaysSinceLastRecordTab() {
         footerLayout.visibility = View.GONE
     }
 
-    private fun showClientsFragment() {
-        if (navigationController.currentDestination?.id != R.id.clientsFragment) {
-            navigationView.selectedItemId = R.id.registerActivityFragment
-            navigationController.navigate(R.id.clientsFragment)
-        }
-    }
-
-    // TODO MOVE TO VIEWMODEL
-    private fun handlePendingDates() {
-        val currentDate = Date()
-        val currentCalendar = Calendar.getInstance()
-        currentCalendar.time = currentDate
-
-        for (index in daysPending downTo 1) {
-            val dayBefore = currentCalendar[Calendar.DAY_OF_MONTH] - index
-            val calendarBefore = Calendar.getInstance()
-            calendarBefore[Calendar.DAY_OF_MONTH] = dayBefore
-            calendars.add(calendarBefore)
-        }
-        calendars.add(currentCalendar)
-        olderDay = DateUtils.getDateFormatted(calendars.first())
-    }
-
     fun showTabRegisterDate() {
-        tvTabDate.text = DateUtils.getDateFormatted(calendars.first())
         dateTabLayout.visibility = View.VISIBLE
         clientTabLayout.visibility = View.VISIBLE
     }

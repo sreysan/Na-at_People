@@ -2,6 +2,7 @@ package mx.com.na_at.hsolano.na_atpeople.model.network.retrofit
 
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.NewsDetail
+import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -25,4 +26,7 @@ interface ApiService {
 
     @GET("activities")
     fun getAllActivities(): Call<List<RegisterObjectResponse>>
+
+    @GET("activity-records")
+    fun getActivityRecords(): Call<List<ActivityRecordResponse>>
 }
