@@ -6,15 +6,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import mx.com.na_at.hsolano.na_atpeople.R
-import mx.com.na_at.hsolano.na_atpeople.util.Constants
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
 import java.util.*
 
@@ -34,6 +31,9 @@ class HomeActivity : AppCompatActivity() {
     private val daysPending = 3
     private lateinit var tvTabDate: TextView
     lateinit var tvClientName: TextView
+    lateinit var tvLabelFirstTab: TextView
+
+    private lateinit var loaderContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +43,9 @@ class HomeActivity : AppCompatActivity() {
         navigationController = findNavController(R.id.fragment_navigation_host)
 
         val tvRegisterHours = findViewById<TextView>(R.id.text_view_register_hours)
+        loaderContainer = findViewById(R.id.linear_layout_loader)
+        loaderContainer.background.alpha = 128
+
         tvRegisterHours.setOnClickListener {
             showClientsFragment()
         }
@@ -52,12 +55,12 @@ class HomeActivity : AppCompatActivity() {
         clientTabLayout = findViewById(R.id.constraint_layout_tab_client)
         dateTabLayout = findViewById(R.id.linear_layout_tab_date)
         tvTabDate = findViewById(R.id.text_view_tab_date)
+        tvLabelFirstTab = findViewById(R.id.text_view_label_client)
         tvClientName = findViewById(R.id.text_view_client_name)
         val tvChangeClients = findViewById<TextView>(R.id.text_view_modify_client)
         tvChangeClients.setOnClickListener {
             backToClientsView()
         }
-
 
         handlePendingDates()
     }
@@ -66,13 +69,11 @@ class HomeActivity : AppCompatActivity() {
         footerLayout.visibility = View.GONE
     }
 
-    fun onExpandToolbar() {
-        //footerLayout.visibility = View.VISIBLE
-    }
-
     private fun showClientsFragment() {
-        navigationView.selectedItemId = R.id.activitiesFragment
-        navigationController.navigate(R.id.clientsFragment)
+        if (navigationController.currentDestination?.id != R.id.clientsFragment) {
+            navigationView.selectedItemId = R.id.registerActivityFragment
+            navigationController.navigate(R.id.clientsFragment)
+        }
     }
 
     // TODO MOVE TO VIEWMODEL
@@ -97,8 +98,14 @@ class HomeActivity : AppCompatActivity() {
         clientTabLayout.visibility = View.VISIBLE
     }
 
-    fun setTabClientName(clientName: String) {
-        tvClientName.text = clientName
+    fun hideInfoTabs() {
+        dateTabLayout.visibility = View.GONE
+        clientTabLayout.visibility = View.GONE
+    }
+
+    fun setTabInfo(title: String, content: String) {
+        tvLabelFirstTab.text = title
+        tvClientName.text = content
     }
 
     private fun backToClientsView() {
@@ -109,5 +116,13 @@ class HomeActivity : AppCompatActivity() {
 
     fun navigateToFragment(fragmentId: Int) {
         navigationController.navigate(fragmentId, bundle)
+    }
+
+    fun showLoader() {
+        loaderContainer.visibility = View.VISIBLE
+    }
+
+    fun hideLoader() {
+        loaderContainer.visibility = View.GONE
     }
 }

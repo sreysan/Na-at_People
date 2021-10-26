@@ -15,10 +15,8 @@ import mx.com.na_at.hsolano.na_atpeople.view.contract.ActivitiesHoursEvents
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 
 class ActivitiesAdapter(
-    private val values: List<ActivityHour>,
-    private val viewModel: RegisterActivityViewModel,
-    private val listener: ActivitiesHoursEvents,
-    private val viewLifecycleOwner: LifecycleOwner
+    private var values: List<ActivityHour>,
+    private val listener: ActivitiesHoursEvents
 ) : RecyclerView.Adapter<ActivitiesAdapter.ViewHolder>() {
 
     lateinit var context: Context
@@ -40,39 +38,34 @@ class ActivitiesAdapter(
         holder.tvHours.text = currentValue.isLessEnable.toString()
 
         holder.ivLess.setOnClickListener {
-            // listener.onLessHourClicked(currentValue)
-            viewModel.lessHour()
+            listener.onLessHourClicked(currentValue, position)
         }
         holder.ivAdd.setOnClickListener {
-            viewModel.addHours()
-            // listener.onAddHourClicked(currentValue)
+            listener.onAddHourClicked(currentValue, position)
         }
 
-        viewModel.count.observe(viewLifecycleOwner, {
-            holder.tvHours.text = "$it hrs"
-        })
+        holder.tvHours.text = "${currentValue.hours} hrs"
 
-        viewModel.lessButtonState.observe(viewLifecycleOwner, {
-            if (it)
-                holder.ivLess.setColorFilter(ContextCompat.getColor(context, R.color.primary))
-            else
-                holder.ivLess.setColorFilter(ContextCompat.getColor(context, R.color.gray_9B9B9B))
 
-        })
+        holder.ivLess.isEnabled = currentValue.isLessEnable
+        holder.ivAdd.isEnabled = currentValue.isAddEnable
 
-        viewModel.addButtonState.observe(viewLifecycleOwner, {
-            if (it)
-                holder.ivAdd.setColorFilter(ContextCompat.getColor(context, R.color.primary))
-            else
-                holder.ivAdd.setColorFilter(ContextCompat.getColor(context, R.color.gray_9B9B9B))
+        if (currentValue.isLessEnable) {
+            holder.ivLess.setColorFilter(ContextCompat.getColor(context, R.color.primary))
+            holder.tvHours.setTextColor(ContextCompat.getColor(context, R.color.black_333333))
+        } else {
+            holder.tvHours.setTextColor(ContextCompat.getColor(context, R.color.inactive_color))
+            holder.ivLess.setColorFilter(ContextCompat.getColor(context, R.color.gray_9B9B9B))
+        }
 
-        })
+        if (currentValue.isAddEnable)
+            holder.ivAdd.setColorFilter(ContextCompat.getColor(context, R.color.primary))
+        else
+            holder.ivAdd.setColorFilter(ContextCompat.getColor(context, R.color.gray_9B9B9B))
 
     }
 
-    override fun getItemCount(): Int {
-        return values.size
-    }
+    override fun getItemCount(): Int = values.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvActivityTitle = view.findViewById<TextView>(R.id.text_view_activity_title)

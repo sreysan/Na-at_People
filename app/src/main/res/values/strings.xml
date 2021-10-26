@@ -10,9 +10,11 @@
     <string name="label_logout"><u>Cerrar sesión</u></string>
     <string name="label_register_hours">+ Registrar horas</string>
     <string name="label_client">Cliente</string>
+    <string name="label_project">Proyecto</string>
     <string name="label_modify_client"><u>Cambiar</u></string>
     <string name="label_projects_title">¿En que proyecto trabajaste?</string>
     <string name="label_activities_title">¿Qué actividades hiciste?</string>
     <string name="label_hours_label">Horas trabajadas en el proyecto:</string>
     <string name="button_continue">Continuar</string>
+    <string name="template_hours">%d horas</string>
 </resources>

@@ -4,17 +4,17 @@ import androidx.lifecycle.MutableLiveData
 import mx.com.na_at.hsolano.na_atpeople.model.ActivityHour
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.retrofit.ApiClient
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.DEVELOP_SERVER
+import mx.com.na_at.hsolano.na_atpeople.view.contract.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterActivityRepository {
 
-    fun getAllClients(): MutableLiveData<List<Pair<String, String>>> {
-        val clients = MutableLiveData<List<Pair<String, String>>>()
-
+    fun getAllClients(listener: GetRegisterActivityListener) {
         val result: Call<List<RegisterObjectResponse>> =
-            ApiClient.buildApiService("http://3.238.21.227:8080/").getAllClients()
+            ApiClient.buildApiService(DEVELOP_SERVER).getAllClients()
 
         result.enqueue(object : Callback<List<RegisterObjectResponse>> {
             override fun onResponse(
@@ -23,26 +23,20 @@ class RegisterActivityRepository {
             ) {
                 if (response.isSuccessful) {
                     val list = response.body() as List<RegisterObjectResponse>
-
-                    val clientsPair = mutableListOf<Pair<String, String>>()
-                    for (client in list) {
-                        clientsPair.add(Pair(client.id, client.name))
-                    }
-                    clients.value = clientsPair
+                    listener.onGetClientsSuccess(list)
+                } else {
+                    listener.onGetClientsError(GetClientsError())
                 }
             }
 
             override fun onFailure(call: Call<List<RegisterObjectResponse>>, t: Throwable) {
-                TODO("Not yet implemented")
+                listener.onGetClientsError(t)
             }
         })
 
-        return clients
-
     }
 
-    fun getProjectsByClientId(id: String): MutableLiveData<List<Pair<String, String>>> {
-        val clients = MutableLiveData<List<Pair<String, String>>>()
+    fun getProjectsByClientId(id: String, callback: GetProjectsByClientIdCallback) {
         val result: Call<List<RegisterObjectResponse>> =
             ApiClient.buildApiService("https://demo7683580.mockable.io/").getProjectsByIdClient(id)
 
@@ -53,29 +47,21 @@ class RegisterActivityRepository {
             ) {
                 if (response.isSuccessful) {
                     val list = response.body() as List<RegisterObjectResponse>
-
-                    val clientsPair = mutableListOf<Pair<String, String>>()
-                    for (client in list) {
-                        clientsPair.add(Pair(client.id, client.name))
-                    }
-                    clients.value = clientsPair
+                    callback.onGetProjectsByClientIdSuccessful(list)
+                } else {
+                    callback.onGetProjectsByClientIdFailure(GetProjectsByIdError())
                 }
             }
 
-            override fun onFailure(call: Call<List<RegisterObjectResponse>>, t: Throwable) {
-                TODO("Not yet implemented")
+            override fun onFailure(call: Call<List<RegisterObjectResponse>>, error: Throwable) {
+                callback.onGetProjectsByClientIdFailure(error)
             }
         })
-
-        return clients
-
     }
 
-    fun getAllActivities(): MutableLiveData<List<ActivityHour>> {
-        val activities = MutableLiveData<List<ActivityHour>>()
-
+    fun getAllActivities(callback: GetActivitiesCallback) {
         val result: Call<List<RegisterObjectResponse>> =
-            ApiClient.buildApiService("http://3.238.21.227:8080/").getAllActivities()
+            ApiClient.buildApiService(DEVELOP_SERVER).getAllActivities()
 
         result.enqueue(object : Callback<List<RegisterObjectResponse>> {
             override fun onResponse(
@@ -84,30 +70,15 @@ class RegisterActivityRepository {
             ) {
                 if (response.isSuccessful) {
                     val list = response.body() as List<RegisterObjectResponse>
-
-                    val activitiesPair = mutableListOf<ActivityHour>()
-                    for (activity in list) {
-                        activitiesPair.add(
-                            ActivityHour(
-                                activity.id,
-                                activity.name,
-                                0,
-                                false,
-                                false
-                            )
-                        )
-                    }
-                    activities.value = activitiesPair
-                }
+                    callback.onGetActivitiesSuccessful(list)
+                } else
+                    callback.onGetActivitiesFailure(GetActivitiesError())
             }
 
             override fun onFailure(call: Call<List<RegisterObjectResponse>>, t: Throwable) {
-                TODO("Not yet implemented")
+                callback.onGetActivitiesFailure(t)
             }
         })
-
-        return activities
-
     }
 
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_ID
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_NAME
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.RegisterActivityAdapter
 import mx.com.na_at.hsolano.na_atpeople.view.contract.RegisterActivityEvents
@@ -27,6 +28,11 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_register_activity, container, false)
+    }
+
+    override fun onResume() {
+        (activity as HomeActivity).hideInfoTabs()
+        super.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,12 +54,17 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
             rvClients.adapter = RegisterActivityAdapter(it, this)
         })
 
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            if (it) (activity as HomeActivity).showLoader()
+            else (activity as HomeActivity).hideLoader()
+        })
+
     }
 
     override fun onItemClickListener(item: Pair<String, String>) {
         val activity = (activity as HomeActivity)
-        activity.setTabClientName(item.second)
         activity.bundle.putString(CLIENT_ID, item.first)
+        activity.bundle.putString(CLIENT_NAME, item.second)
         activity.navigateToFragment(R.id.action_clientsFragment_to_projectsFragment)
     }
 

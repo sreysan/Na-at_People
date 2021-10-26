@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_ID
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_NAME
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.PROJECT_ID
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.PROJECT_NAME
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.RegisterActivityAdapter
 import mx.com.na_at.hsolano.na_atpeople.view.contract.RegisterActivityEvents
@@ -25,6 +27,7 @@ import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 class ProjectsFragment : Fragment(), RegisterActivityEvents {
 
     lateinit var idClient: String
+    lateinit var nameClient: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +35,12 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
         savedInstanceState: Bundle?
     ): View? {
         idClient = arguments?.getString(CLIENT_ID) ?: ""
+        nameClient = arguments?.getString(CLIENT_NAME) ?: ""
         return inflater.inflate(R.layout.fragment_register_activity, container, false)
     }
 
     override fun onResume() {
+        (activity as HomeActivity).setTabInfo(getString(R.string.label_client), nameClient)
         (activity as HomeActivity).showTabRegisterDate()
         super.onResume()
     }
@@ -59,16 +64,21 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
         )
 
         viewModel.requestGetProjectsByClientId(idClient)
+
         viewModel.projects.observe(viewLifecycleOwner, {
             rvProjects.adapter = RegisterActivityAdapter(it, this)
         })
 
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            if (it) (activity as HomeActivity).showLoader()
+            else (activity as HomeActivity).hideLoader()
+        })
     }
 
     override fun onItemClickListener(item: Pair<String, String>) {
         val activity = (activity as HomeActivity)
-        activity.setTabClientName(item.second)
         activity.bundle.putString(PROJECT_ID, item.first)
+        activity.bundle.putString(PROJECT_NAME, item.second)
         activity.navigateToFragment(R.id.action_projectsFragment_to_activitiesFragment)
     }
 }
