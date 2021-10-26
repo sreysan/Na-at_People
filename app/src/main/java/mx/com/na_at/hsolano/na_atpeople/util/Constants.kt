@@ -7,6 +7,7 @@ object Constants {
     const val PROJECT_ID = "PROJECT_ID"
     const val PROJECT_NAME = "PROJECT_NAME"
     const val DAYS_HEADER = "Days-since-last-record"
+    const val DATABASE_NAME = "NotificationsDB"
 
     const val DEVELOP_SERVER = "http://3.238.21.227:8080/"
 }

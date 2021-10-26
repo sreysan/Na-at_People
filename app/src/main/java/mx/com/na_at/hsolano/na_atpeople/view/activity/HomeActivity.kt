@@ -15,12 +15,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.database.entity.Notification
+import mx.com.na_at.hsolano.na_atpeople.model.repository.NotificationsRepositoryImpl
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
-import mx.com.na_at.hsolano.na_atpeople.viewmodel.HomeViewModel
-import mx.com.na_at.hsolano.na_atpeople.viewmodel.HomeViewModelFactory
-import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
-import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.*
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
@@ -87,6 +86,7 @@ class HomeActivity : AppCompatActivity() {
         viewModel.olderDay.observe(this, {
             tvTabDate.text = it
         })
+
     }
 
 
@@ -134,5 +134,37 @@ class HomeActivity : AppCompatActivity() {
 
     fun hideLoader() {
         loaderContainer.visibility = View.GONE
+    }
+
+    private fun populateDB() {
+        val repository = NotificationsRepositoryImpl(applicationContext)
+        val notificationViewModel = ViewModelProvider(
+            this,
+            NotificationViewModelFactory(repository)
+        ).get(NotificationsViewModel::class.java)
+        val n1 = Notification(
+            typeNotification = 1,
+            titleNotification = "Actividad 1",
+            dateNotification = "20/07/21"
+        )
+        val n2 = Notification(
+            typeNotification = 2,
+            titleNotification = "NAAT Fabrica de talentos",
+            dateNotification = "18/07/21"
+        )
+        val n3 = Notification(
+            typeNotification = 2,
+            titleNotification = "NAAT Aniversario",
+            dateNotification = "15/07/21"
+        )
+        val n4 = Notification(
+            typeNotification = 1,
+            titleNotification = "Actividad 9",
+            dateNotification = "10/07/21"
+        )
+        notificationViewModel.insertNotification(n1)
+        notificationViewModel.insertNotification(n2)
+        notificationViewModel.insertNotification(n3)
+        notificationViewModel.insertNotification(n4)
     }
 }
