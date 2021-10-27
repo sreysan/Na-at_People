@@ -11,6 +11,7 @@ import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NewsRepository
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.POST_ID
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModel
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModelFactory
 
@@ -30,7 +31,6 @@ class NewsDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_news_detail, container, false)
     }
 
@@ -41,21 +41,37 @@ class NewsDetailFragment : Fragment() {
         val tvContent = view.findViewById<TextView>(R.id.text_view_news_detail_content)
 
 
-        val repository = NewsRepository()
-        newsViewModel = ViewModelProvider(
-            this,
-            NewsViewModelFactory(repository)
-        ).get(NewsViewModel::class.java)
+        context?.let {
+            val repository =
+                NewsRepository(it)
+
+            newsViewModel = ViewModelProvider(
+                this,
+                NewsViewModelFactory(repository)
+            ).get(NewsViewModel::class.java)
+        }
+
 
         newsViewModel.requestGetNewsDetail(postId)
 
-        newsViewModel.newDetail.observe(viewLifecycleOwner, { newsDetail ->
+        newsViewModel.newsDetail.observe(viewLifecycleOwner, { newsDetail ->
             tvTitle.text = newsDetail.title
             tvDate.text = newsDetail.publishDate
             tvContent.text = newsDetail.content
         })
 
+        newsViewModel.isLoading.observe(viewLifecycleOwner, {
+            if (it) (activity as HomeActivity).showLoader()
+            else (activity as HomeActivity).hideLoader()
+        })
 
+        newsViewModel.isConnected.observe(viewLifecycleOwner, {
+            (activity as HomeActivity).showOrHideInternetMessage(it, object : NetworkCallback {
+                override fun tryAgainRequest() {
+                    newsViewModel.requestGetNewsDetail(postId)
+                }
+            })
+        })
     }
 
 }

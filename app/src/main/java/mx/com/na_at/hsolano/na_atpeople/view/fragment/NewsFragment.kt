@@ -19,6 +19,7 @@ import mx.com.na_at.hsolano.na_atpeople.util.Constants.POST_ID
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.NewsAdapter
 import mx.com.na_at.hsolano.na_atpeople.view.contract.NewsEvents
+import mx.com.na_at.hsolano.na_atpeople.viewmodel.MainViewModel
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModel
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.NewsViewModelFactory
 
@@ -36,20 +37,19 @@ class NewsFragment : Fragment(), NewsEvents {
     }
 
 
-    override fun onResume() {
-        (activity as HomeActivity).showDaysSinceLastRecordTab()
-        super.onResume()
-    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repository = NewsRepository()
-        newsViewModel = ViewModelProvider(
-            this,
-            NewsViewModelFactory(repository)
-        ).get(NewsViewModel::class.java)
+        context?.let {
+            val repository = NewsRepository(it)
+            newsViewModel = ViewModelProvider(
+                this,
+                NewsViewModelFactory(repository)
+            ).get(NewsViewModel::class.java)
+        }
 
         val rvNews = view.findViewById<RecyclerView>(R.id.recycler_view_news)
         rvNews.layoutManager = LinearLayoutManager(context)
@@ -58,13 +58,19 @@ class NewsFragment : Fragment(), NewsEvents {
         adapter = NewsAdapter(news, this)
         rvNews.adapter = adapter
 
-        newsViewModel.requestGetAllNews()
 
         newsViewModel.news.observe(viewLifecycleOwner, { allNews ->
             news.addAll(allNews.toMutableList())
             adapter.notifyDataSetChanged()
         })
     }
+
+    override fun onResume() {
+        (activity as HomeActivity).showDaysSinceLastRecordTab()
+        newsViewModel.requestGetAllNews()
+        super.onResume()
+    }
+
 
     override fun onNewsClickListener(postId: String) {
         val navHostFragment =

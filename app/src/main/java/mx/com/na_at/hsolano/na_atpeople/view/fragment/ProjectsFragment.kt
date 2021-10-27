@@ -19,6 +19,7 @@ import mx.com.na_at.hsolano.na_atpeople.util.Constants.PROJECT_ID
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.PROJECT_NAME
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.RegisterActivityAdapter
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.view.contract.RegisterActivityEvents
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
@@ -28,6 +29,7 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
 
     lateinit var idClient: String
     lateinit var nameClient: String
+    lateinit var viewModel: RegisterActivityViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,13 +59,25 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
         val rvProjects = view.findViewById<RecyclerView>(R.id.recycler_view_clients)
         rvProjects.layoutManager = LinearLayoutManager(context)
 
-        val repository = RegisterActivityRepository()
+        context?.let {
+            val repository = RegisterActivityRepository(it)
+            viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
+                RegisterActivityViewModel::class.java
+            )
+        }
 
-        val viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
-            RegisterActivityViewModel::class.java
-        )
+
 
         viewModel.requestGetProjectsByClientId(idClient)
+
+        viewModel.isConnected.observe(viewLifecycleOwner, {
+            (activity as HomeActivity).showOrHideInternetMessage(it, object : NetworkCallback {
+                override fun tryAgainRequest() {
+                    viewModel.requestGetProjectsByClientId(idClient)
+                }
+            })
+        })
+
 
         viewModel.projects.observe(viewLifecycleOwner, {
             rvProjects.adapter = RegisterActivityAdapter(it, this)

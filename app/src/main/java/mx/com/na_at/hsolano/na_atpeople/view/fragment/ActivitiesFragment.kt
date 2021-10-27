@@ -19,6 +19,7 @@ import mx.com.na_at.hsolano.na_atpeople.util.Constants.PROJECT_NAME
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.ActivitiesAdapter
 import mx.com.na_at.hsolano.na_atpeople.view.contract.ActivitiesHoursEvents
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 
@@ -51,17 +52,28 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
         val recyclerViewActivities = view.findViewById<RecyclerView>(R.id.recycler_view_activities)
         recyclerViewActivities.layoutManager = LinearLayoutManager(context)
 
-        val repository = RegisterActivityRepository()
+        context?.let {
+            val repository = RegisterActivityRepository(it)
 
-        viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
-            RegisterActivityViewModel::class.java
-        )
+            viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
+                RegisterActivityViewModel::class.java
+            )
+        }
+
 
         val activities = mutableListOf<ActivityHour>()
         val adapter = ActivitiesAdapter(activities, this)
         recyclerViewActivities.adapter = adapter
 
         viewModel.requestGetAllActivities()
+
+        viewModel.isConnected.observe(viewLifecycleOwner, {
+            (activity as HomeActivity).showOrHideInternetMessage(it, object : NetworkCallback {
+                override fun tryAgainRequest() {
+                    viewModel.requestGetAllActivities()
+                }
+            })
+        })
 
         viewModel.activities.observe(viewLifecycleOwner, {
             activities.addAll(it)

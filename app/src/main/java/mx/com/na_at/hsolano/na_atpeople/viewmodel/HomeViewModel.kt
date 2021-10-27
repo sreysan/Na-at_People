@@ -8,13 +8,19 @@ import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
 import mx.com.na_at.hsolano.na_atpeople.view.contract.GetActivityRecordsCallback
 import java.util.*
 
-class HomeViewModel(private val repository: RegisterActivityRepository) : ViewModel() {
+class HomeViewModel(private val repository: RegisterActivityRepository) :
+    MainViewModel(repository) {
 
     val emptyDays = MutableLiveData<Boolean>()
     val days = MutableLiveData<Int>()
     val olderDay = MutableLiveData<String>()
 
     fun requestGetActivityRecords() {
+
+        if (!isConnectedToInternet())
+            return
+
+        isLoading.value = true
         repository.getActivityRecords(object : GetActivityRecordsCallback {
             override fun onGetActivityRecordsSuccessful(
                 activityRecords: List<ActivityRecordResponse>,
@@ -26,10 +32,12 @@ class HomeViewModel(private val repository: RegisterActivityRepository) : ViewMo
                     days.postValue(daysSinceLastRecord)
                     handlePendingDates(daysSinceLastRecord)
                 }
+                isLoading.value = false
             }
 
             override fun onGetActivityRecordsFailure(error: Throwable) {
                 emptyDays.postValue(true)
+                isLoading.value = false
             }
         })
     }

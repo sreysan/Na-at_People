@@ -1,46 +1,45 @@
 package mx.com.na_at.hsolano.na_atpeople.model.repository
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.NewsDetail
 import mx.com.na_at.hsolano.na_atpeople.model.network.retrofit.ApiClient
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.DEVELOP_SERVER
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
+import mx.com.na_at.hsolano.na_atpeople.view.contract.GetNewsCallback
+import mx.com.na_at.hsolano.na_atpeople.view.contract.GetNewsDetailCallback
+import mx.com.na_at.hsolano.na_atpeople.view.contract.GetNewsDetailError
+import mx.com.na_at.hsolano.na_atpeople.view.contract.GetNewsError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NewsRepository {
+class NewsRepository(context: Context) : HomeRepository(context) {
 
-
-    fun requestGetAllNews(): MutableLiveData<List<News>> {
-        val allNews = MutableLiveData<List<News>>()
+    fun requestGetAllNews(callback: GetNewsCallback) {
 
         val result: Call<List<News>> =
-            ApiClient.buildApiService("http://demo7569783.mockable.io/").getAllNews()
+            ApiClient.buildApiService(DEVELOP_SERVER).getAllNews()
 
         result.enqueue(object : Callback<List<News>> {
             override fun onResponse(call: Call<List<News>>, response: Response<List<News>>) {
                 if (response.isSuccessful) {
-                    response.body()?.let { news ->
-                        for (post in news) {
-                            post.publishDate = DateUtils.formatUtcDate(post.publishDate)
-                        }
-                        allNews.value = news
-                    }
-                }
+                    response.body()?.let { callback.onGetNewsSuccessful(it) }
+                } else
+                    callback.onGetNewsFailure(GetNewsError())
             }
 
             override fun onFailure(call: Call<List<News>>, t: Throwable) {
+                callback.onGetNewsFailure(t)
             }
         })
-        return allNews
     }
 
-    fun requestNewsDetail(id: String): MutableLiveData<NewsDetail> {
-        val newsDetail = MutableLiveData<NewsDetail>()
+    fun requestNewsDetail(id: String, callback: GetNewsDetailCallback) {
 
         val result: Call<NewsDetail> =
-            ApiClient.buildApiService("https://demo6074034.mockable.io/").getNewsDetail(id)
+            ApiClient.buildApiService(DEVELOP_SERVER).getNewsDetail(id)
 
         result.enqueue(object : Callback<NewsDetail> {
             override fun onResponse(
@@ -48,18 +47,15 @@ class NewsRepository {
                 response: Response<NewsDetail>
             ) {
                 if (response.isSuccessful) {
-                    val newsDetailResponse = response.body()
-                    newsDetailResponse?.let {
-                        newsDetailResponse.publishDate = DateUtils.formatDateTime(newsDetailResponse.publishDate)
-                    }
-                    newsDetail.value = response.body()
-                }
+                    response.body()?.let { callback.onGetNewsDetailSuccessful(it) }
+                } else
+                    callback.onGetNewsDetailFailure(GetNewsDetailError())
             }
 
             override fun onFailure(call: Call<NewsDetail>, t: Throwable) {
+                callback.onGetNewsDetailFailure(t)
             }
         })
-        return newsDetail
     }
 
 

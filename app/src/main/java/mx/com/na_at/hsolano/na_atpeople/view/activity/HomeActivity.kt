@@ -18,7 +18,9 @@ import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.database.entity.Notification
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NotificationsRepositoryImpl
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
+import mx.com.na_at.hsolano.na_atpeople.util.ConnectivityUtil
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.*
 import java.util.*
 
@@ -26,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var clientTabLayout: ConstraintLayout
     private lateinit var footerLayout: ConstraintLayout
+    private lateinit var layoutErrors: ConstraintLayout
     lateinit var dateTabLayout: LinearLayout
     lateinit var navigationController: NavController
     lateinit var navigationView: BottomNavigationView
@@ -35,6 +38,7 @@ class HomeActivity : AppCompatActivity() {
     lateinit var tvTabDate: TextView
     lateinit var tvClientName: TextView
     lateinit var tvLabelFirstTab: TextView
+    lateinit var tvTryAgain: TextView
 
     private lateinit var loaderContainer: LinearLayout
 
@@ -54,6 +58,7 @@ class HomeActivity : AppCompatActivity() {
             showClientsFragment()
         }
         footerLayout = findViewById(R.id.constraint_layout_footer)
+        layoutErrors = findViewById(R.id.layout_errors)
 
         navigationView.setupWithNavController(navigationController)
         clientTabLayout = findViewById(R.id.constraint_layout_tab_client)
@@ -62,16 +67,34 @@ class HomeActivity : AppCompatActivity() {
         tvLabelFirstTab = findViewById(R.id.text_view_label_client)
         tvClientName = findViewById(R.id.text_view_client_name)
         val tvChangeClients = findViewById<TextView>(R.id.text_view_modify_client)
+        tvTryAgain = findViewById(R.id.text_view_try_again)
+
         tvChangeClients.setOnClickListener {
             backToClientsView()
         }
-        val repository = RegisterActivityRepository()
+        val repository = RegisterActivityRepository(this)
 
         val viewModel = ViewModelProvider(this, HomeViewModelFactory(repository)).get(
             HomeViewModel::class.java
         )
 
+        viewModel.isLoading.observe(this, {
+            if (it) showLoader()
+            else hideLoader()
+        })
+
         viewModel.requestGetActivityRecords()
+
+        viewModel.isConnected.observe(this, {
+            showOrHideInternetMessage(it, object : NetworkCallback {
+                override fun tryAgainRequest() {
+                    viewModel.requestGetActivityRecords()
+                    navigationController.popBackStack()
+                    navigationController.navigate(R.id.newsFragment)
+                }
+            })
+        })
+
 
         val tvDays = findViewById<TextView>(R.id.text_view_days)
         viewModel.days.observe(this, {
@@ -87,6 +110,13 @@ class HomeActivity : AppCompatActivity() {
             tvTabDate.text = it
         })
 
+    }
+
+    fun showOrHideInternetMessage(isOnline: Boolean, callback: NetworkCallback) {
+        layoutErrors.visibility = if (isOnline) View.GONE else View.VISIBLE
+        tvTryAgain.setOnClickListener {
+            callback.tryAgainRequest()
+        }
     }
 
 

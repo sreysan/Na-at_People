@@ -1,7 +1,6 @@
 package mx.com.na_at.hsolano.na_atpeople.model.repository
 
-import androidx.lifecycle.MutableLiveData
-import mx.com.na_at.hsolano.na_atpeople.model.ActivityHour
+import android.content.Context
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.retrofit.ApiClient
@@ -12,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterActivityRepository {
+class RegisterActivityRepository(context: Context) : HomeRepository(context) {
 
     fun getAllClients(listener: GetRegisterActivityListener) {
         val result: Call<List<RegisterObjectResponse>> =
@@ -103,8 +102,6 @@ class RegisterActivityRepository {
                 callback.onGetActivityRecordsFailure(t)
             }
         })
-
-
     }
 
 

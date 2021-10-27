@@ -23,5 +23,9 @@
     <string name="label_activity_added">Actividad agregada</string>
     <string name="template_activity_added">Se agrega la &quot;%s&quot;</string>
 
+    <string name="error_connection_label">Error de conexión</string>
+    <string name="error_serve_label">Algo salió mal</string>
+    <string name="error_message">Intentalo nuevamente</string>
+    <string name="try_again_label">Volver a intentar</string>
 
 </resources>

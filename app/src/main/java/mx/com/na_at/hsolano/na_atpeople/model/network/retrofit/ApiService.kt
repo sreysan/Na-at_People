@@ -14,7 +14,7 @@ interface ApiService {
     @GET("news")
     fun getAllNews(): Call<List<News>>
 
-    @GET("newsDetail/{id}")
+    @GET("news/{id}")
     fun getNewsDetail(@Path("id") id: String): Call<NewsDetail>
 
     @GET("clients")
@@ -22,7 +22,6 @@ interface ApiService {
 
     @GET("clients/{clientId}/projects/")
     fun getProjectsByIdClient(@Path("clientId") id: String): Call<List<RegisterObjectResponse>>
-
 
     @GET("activities")
     fun getAllActivities(): Call<List<RegisterObjectResponse>>

@@ -16,11 +16,14 @@ import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_ID
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_NAME
 import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.adapter.RegisterActivityAdapter
+import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.view.contract.RegisterActivityEvents
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 
 class ClientsFragment : Fragment(), RegisterActivityEvents {
+
+    lateinit var viewModel: RegisterActivityViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,16 +44,30 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         val tvDate = view.findViewById<TextView>(R.id.text_view_date_selector)
 
         tvDate.text = (activity as HomeActivity).tvTabDate.text
-        val repository = RegisterActivityRepository()
 
-        val viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
-            RegisterActivityViewModel::class.java
-        )
+        context?.let {
+            val repository =
+                RegisterActivityRepository(it)
+
+            viewModel = ViewModelProvider(this, RegisterActivityModelFactory(repository)).get(
+                RegisterActivityViewModel::class.java
+            )
+        }
 
         val rvClients = view.findViewById<RecyclerView>(R.id.recycler_view_clients)
         rvClients.layoutManager = LinearLayoutManager(context)
 
+        viewModel.isConnected.observe(viewLifecycleOwner, {
+            (activity as HomeActivity).showOrHideInternetMessage(it, object : NetworkCallback{
+                override fun tryAgainRequest() {
+                    viewModel.requestGetAllClients()
+                }
+            })
+        })
+
         viewModel.requestGetAllClients()
+
+
         viewModel.clients.observe(viewLifecycleOwner, {
             rvClients.adapter = RegisterActivityAdapter(it, this)
         })

@@ -19,11 +19,23 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
     var activity = MutableLiveData<ActivityHour>()
 
 
-    var isLoading = MutableLiveData<Boolean>()
     var hoursLiveData = MutableLiveData<Int>()
     var totalHours = 0
 
+    var isLoading = MutableLiveData<Boolean>()
+    var isConnected = MutableLiveData<Boolean>()
+
+    private fun isConnectedToInternet(): Boolean {
+        val isOnline = repository.isConnectedToInternet()
+        isConnected.value = isOnline
+        return isOnline
+    }
+
     fun requestGetAllClients() {
+
+        if (!isConnectedToInternet())
+            return
+
         isLoading.value = true
         repository.getAllClients(object : GetRegisterActivityListener {
             override fun onGetClientsSuccess(clientsResponse: List<RegisterObjectResponse>) {
@@ -38,6 +50,9 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
     }
 
     fun requestGetProjectsByClientId(id: String) {
+        if (!isConnectedToInternet())
+            return
+
         isLoading.value = true
         repository.getProjectsByClientId(id, object : GetProjectsByClientIdCallback {
             override fun onGetProjectsByClientIdSuccessful(projectsResponse: List<RegisterObjectResponse>) {
@@ -54,6 +69,9 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
     }
 
     fun requestGetAllActivities() {
+        if (!isConnectedToInternet())
+            return
+
         isLoading.value = true
         repository.getAllActivities(object : GetActivitiesCallback {
             override fun onGetActivitiesSuccessful(activitiesResponse: List<RegisterObjectResponse>) {
