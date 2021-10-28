@@ -28,4 +28,12 @@
     <string name="error_message">Intentalo nuevamente</string>
     <string name="try_again_label">Volver a intentar</string>
 
+    <string name="label_al_continuar">Al continuar, aceptas nuestros</string>
+    <string name="label_terms_conditions">Términos y condiciones</string>
+    <string name="label_login_button">Comenzar con Google</string>
+    <string name="label_login_welcome">Inicia sesión y se parte de NA-AT People</string>
+    <string name="label_login_unete">Únete con tu cuenta NA-AT</string>
+    <string name="label_login_dialog">El acceso a la aplicación, solo esta disponible para talento <b>NAAT</b> Ingresa con tu correo <b>@na-at.com.mx</b></string>
+    <string name="account_preferences">Mail</string>
+
 </resources>

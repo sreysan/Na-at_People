@@ -1,7 +1,9 @@
 package mx.com.na_at.hsolano.na_atpeople.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -13,12 +15,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import mx.com.na_at.hsolano.na_atpeople.App
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.database.entity.Notification
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NotificationsRepositoryImpl
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.ConnectivityUtil
+import mx.com.na_at.hsolano.na_atpeople.util.Constants
+import mx.com.na_at.hsolano.na_atpeople.util.Constants.KEY_URL_PHOTO
 import mx.com.na_at.hsolano.na_atpeople.util.DateUtils
 import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.*
@@ -39,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
     lateinit var tvClientName: TextView
     lateinit var tvLabelFirstTab: TextView
     lateinit var tvTryAgain: TextView
-
+    lateinit var ivUserImage: ImageView
     private lateinit var loaderContainer: LinearLayout
 
 
@@ -68,6 +74,11 @@ class HomeActivity : AppCompatActivity() {
         tvClientName = findViewById(R.id.text_view_client_name)
         val tvChangeClients = findViewById<TextView>(R.id.text_view_modify_client)
         tvTryAgain = findViewById(R.id.text_view_try_again)
+        ivUserImage = findViewById(R.id.image_view_photo)
+        ivUserImage.clipToOutline = true
+
+        val photoUrl = if (App.getPhotoUrl().isBlank()) intent.getStringExtra(KEY_URL_PHOTO) else App.getPhotoUrl()
+        Glide.with(this).load(photoUrl).into(ivUserImage)
 
         tvChangeClients.setOnClickListener {
             backToClientsView()
@@ -109,6 +120,16 @@ class HomeActivity : AppCompatActivity() {
         viewModel.olderDay.observe(this, {
             tvTabDate.text = it
         })
+
+        val tvLogout = findViewById<TextView>(R.id.text_view_logout)
+        tvLogout.setOnClickListener {
+            App.getGoogleSignInClient().signOut()
+                .addOnCompleteListener(this) {
+                    App.removeUserInfo()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+        }
 
     }
 

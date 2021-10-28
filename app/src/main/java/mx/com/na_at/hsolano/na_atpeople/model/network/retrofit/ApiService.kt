@@ -2,12 +2,12 @@ package mx.com.na_at.hsolano.na_atpeople.model.network.retrofit
 
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.NewsDetail
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.LoginRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
+import mx.com.na_at.hsolano.na_atpeople.model.network.response.LoginResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -28,4 +28,8 @@ interface ApiService {
 
     @GET("activity-records")
     fun getActivityRecords(): Call<List<ActivityRecordResponse>>
+
+    @POST("auth/login")
+    fun doLogIn(@Body auth: LoginRequest): Call<LoginResponse>
+
 }
