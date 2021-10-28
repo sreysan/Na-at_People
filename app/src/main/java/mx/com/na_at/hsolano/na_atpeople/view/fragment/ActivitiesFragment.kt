@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,7 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
     private var position = 0
     lateinit var projectId: String
     lateinit var projectName: String
+    lateinit var buttonContinue: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +53,7 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
 
         val recyclerViewActivities = view.findViewById<RecyclerView>(R.id.recycler_view_activities)
         recyclerViewActivities.layoutManager = LinearLayoutManager(context)
-
+        buttonContinue = view.findViewById(R.id.button_continue)
         context?.let {
             val repository = RegisterActivityRepository(it)
 
@@ -59,7 +61,6 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
                 RegisterActivityViewModel::class.java
             )
         }
-
 
         val activities = mutableListOf<ActivityHour>()
         val adapter = ActivitiesAdapter(activities, this)
@@ -96,6 +97,9 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
             else (activity as HomeActivity).hideLoader()
         })
 
+        buttonContinue.setOnClickListener {
+            (activity as HomeActivity).navigateToFragment(R.id.summaryActivityRecordsFragment)
+        }
     }
 
     override fun onAddHourClicked(activityHour: ActivityHour, position: Int) {

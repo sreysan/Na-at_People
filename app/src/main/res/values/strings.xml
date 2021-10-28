@@ -17,6 +17,7 @@
     <string name="label_hours_label">Horas trabajadas en el proyecto:</string>
     <string name="button_continue">Continuar</string>
     <string name="template_hours">%d horas</string>
+    <string name="template_hrs">%d hrs</string>
     <string name="template_days">Tienes %s sin reportar tus actividades</string>
     <string name="label_recent">Recientes</string>
     <string name="label_news">Noticias</string>
@@ -34,6 +35,11 @@
     <string name="label_login_welcome">Inicia sesión y se parte de NA-AT People</string>
     <string name="label_login_unete">Únete con tu cuenta NA-AT</string>
     <string name="label_login_dialog">El acceso a la aplicación, solo esta disponible para talento <b>NAAT</b> Ingresa con tu correo <b>@na-at.com.mx</b></string>
-    <string name="account_preferences">Mail</string>
+    <string name="label_finish">Finalizar</string>
+    <string name="label_delete"><u>Eliminar</u></string>
+    <string name="label_modify"><u>Modificar</u></string>
+    <string name="label_add_more_hours"><u>Agregar más horas en otro proyecto</u></string>
+    <string name="label_hours_worked_day">Horas trabajadas en el día:</string>
+    <string name="label_char">|</string>
 
 </resources>

@@ -3,12 +3,11 @@ package mx.com.na_at.hsolano.na_atpeople.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import mx.com.na_at.hsolano.na_atpeople.model.ActivityHour
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.UpdateActivityRecordsRequest
+import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
-import mx.com.na_at.hsolano.na_atpeople.view.contract.GetActivitiesCallback
-import mx.com.na_at.hsolano.na_atpeople.view.contract.GetClientsError
-import mx.com.na_at.hsolano.na_atpeople.view.contract.GetProjectsByClientIdCallback
-import mx.com.na_at.hsolano.na_atpeople.view.contract.GetRegisterActivityListener
+import mx.com.na_at.hsolano.na_atpeople.view.contract.*
 
 class RegisterActivityViewModel(private val repository: RegisterActivityRepository) : ViewModel() {
 
@@ -18,12 +17,15 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
     var activities = MutableLiveData<List<ActivityHour>>()
     var activity = MutableLiveData<ActivityHour>()
 
+    var activityRecords = MutableLiveData<List<ActivityRecordResponse>>()
 
     var hoursLiveData = MutableLiveData<Int>()
     var totalHours = 0
 
     var isLoading = MutableLiveData<Boolean>()
     var isConnected = MutableLiveData<Boolean>()
+
+    var wasActivityRecordsModified = MutableLiveData<Boolean>()
 
     private fun isConnectedToInternet(): Boolean {
         val isOnline = repository.isConnectedToInternet()
@@ -96,6 +98,73 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
             }
         })
     }
+
+    fun requestGetActivityRecords() {
+
+        if (!isConnectedToInternet())
+            return
+
+        isLoading.value = true
+        repository.getActivityRecords(object : GetActivityRecordsCallback {
+            override fun onGetActivityRecordsSuccessful(
+                activityRecordList: List<ActivityRecordResponse>,
+                daysSinceLastRecord: Int
+            ) {
+                activityRecords.value = activityRecordList
+                isLoading.value = false
+            }
+
+            override fun onGetActivityRecordsFailure(error: Throwable) {
+                isLoading.value = false
+            }
+        })
+    }
+
+    fun requestUpdateActivityRecords(activityRecordsId: String, duration: Int) {
+        if (!isConnectedToInternet())
+            return
+
+        isLoading.value = true
+        val request = UpdateActivityRecordsRequest(duration.toString())
+        repository.updateActivityRecords(
+            activityRecordsId,
+            request,
+            object : UpdateActivityRecordsCallback {
+                override fun onActivityRecordUpdateSuccessful() {
+                    isLoading.value = false
+                    wasActivityRecordsModified.value = true
+                }
+
+                override fun onActivityRecordUpdateFailure(throwable: Throwable) {
+                    isLoading.value = false
+                    wasActivityRecordsModified.value = false
+
+                }
+            })
+    }
+
+    fun requestDeleteActivityRecords(activityRecordsId: String) {
+
+        if (!isConnectedToInternet())
+            return
+
+        isLoading.value = true
+        repository.deleteActivityRecords(
+            activityRecordsId,
+            object : DeleteActivityRecordsCallback {
+                override fun onActivityRecordDeleteSuccessful() {
+                    wasActivityRecordsModified.value = true
+                    isLoading.value = false
+
+                }
+
+                override fun onActivityRecordDeleteFailure(throwable: Throwable) {
+                    wasActivityRecordsModified.value = true
+                    isLoading.value = false
+                }
+            })
+    }
+
 
     private fun updateStateButtons() {
         activity.value?.hours?.let { hours ->

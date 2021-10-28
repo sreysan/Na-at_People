@@ -9,7 +9,11 @@
         android:id="@+id/activitiesFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ActivitiesFragment"
         android:label="fragment_activities"
-        tools:layout="@layout/fragment_activities" />
+        tools:layout="@layout/fragment_activities" >
+        <action
+            android:id="@+id/action_activitiesFragment_to_summaryActivityRecordsFragment"
+            app:destination="@id/summaryActivityRecordsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NewsFragment"
@@ -27,11 +31,12 @@
     <fragment
         android:id="@+id/newsDetailFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.NewsDetailFragment"
-        android:label="NewsDetailFragment" />
+        android:label="NewsDetailFragment"
+        tools:layout="@layout/fragment_news_detail"/>
     <fragment
         android:id="@+id/clientsFragment"
         android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ClientsFragment"
-        android:label="ClientsFragment" >
+        android:label="ClientsFragment">
         <action
             android:id="@+id/action_clientsFragment_to_projectsFragment"
             app:destination="@id/projectsFragment" />
@@ -53,4 +58,9 @@
             android:id="@+id/action_registerActivityFragment_to_clientsFragment"
             app:destination="@id/clientsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/summaryActivityRecordsFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.SummaryActivityRecordsFragment"
+        android:label="fragment_activity_records_summary"
+        tools:layout="@layout/fragment_activity_records_summary" />
 </navigation>

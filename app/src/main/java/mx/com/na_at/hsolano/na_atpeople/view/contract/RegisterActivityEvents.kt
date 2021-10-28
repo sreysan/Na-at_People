@@ -24,15 +24,34 @@ interface GetActivitiesCallback {
 
 interface GetActivityRecordsCallback {
     fun onGetActivityRecordsSuccessful(
-        activityRecords: List<ActivityRecordResponse>,
+        activityRecordList: List<ActivityRecordResponse>,
         daysSinceLastRecord: Int
     )
 
     fun onGetActivityRecordsFailure(error: Throwable)
 }
 
-class GetProjectsByIdError : Throwable()
+
+interface UpdateActivityRecordsCallback {
+    fun onActivityRecordUpdateSuccessful()
+    fun onActivityRecordUpdateFailure(throwable: Throwable)
+}
+
+interface DeleteActivityRecordsCallback {
+    fun onActivityRecordDeleteSuccessful()
+    fun onActivityRecordDeleteFailure(throwable: Throwable)
+}
+
 
 class GetClientsError : Throwable()
 
+class GetProjectsByIdError : Throwable()
+
 class GetActivitiesError : Throwable()
+
+class GetActivityRecordsError : Throwable()
+
+class DeleteActivityRecordsError : Throwable()
+
+class UpdateActivityRecordsError : Throwable()
+

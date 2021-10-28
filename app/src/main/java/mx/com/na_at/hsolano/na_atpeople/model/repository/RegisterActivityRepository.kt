@@ -1,6 +1,8 @@
 package mx.com.na_at.hsolano.na_atpeople.model.repository
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.UpdateActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.retrofit.ApiClient
@@ -95,6 +97,8 @@ class RegisterActivityRepository(context: Context) : HomeRepository(context) {
                     val days = response.headers()[DAYS_HEADER]?.toInt() ?: 0
                     val list = response.body() as List<ActivityRecordResponse>
                     callback.onGetActivityRecordsSuccessful(list, days)
+                } else {
+                    callback.onGetActivityRecordsFailure(GetActivityRecordsError())
                 }
             }
 
@@ -104,5 +108,53 @@ class RegisterActivityRepository(context: Context) : HomeRepository(context) {
         })
     }
 
+
+    fun updateActivityRecords(
+        id: String, request: UpdateActivityRecordsRequest,
+        callback: UpdateActivityRecordsCallback
+    ) {
+        val result =
+            ApiClient.buildApiService(DEVELOP_SERVER).updateActivityRecords(id, request)
+
+        result.enqueue(object : Callback<Unit> {
+            override fun onResponse(
+                call: Call<Unit>,
+                response: Response<Unit>
+            ) {
+                if (response.isSuccessful && response.code() == 200) {
+                    callback.onActivityRecordUpdateSuccessful()
+                } else
+                    callback.onActivityRecordUpdateFailure(UpdateActivityRecordsError())
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                callback.onActivityRecordUpdateFailure(t)
+            }
+        })
+    }
+
+    fun deleteActivityRecords(
+        id: String,
+        callback: DeleteActivityRecordsCallback
+    ) {
+        val result =
+            ApiClient.buildApiService(DEVELOP_SERVER).deleteActivityRecords(id)
+
+        result.enqueue(object : Callback<Unit> {
+            override fun onResponse(
+                call: Call<Unit>,
+                response: Response<Unit>
+            ) {
+                if (response.isSuccessful && response.code() == 204) {
+                    callback.onActivityRecordDeleteSuccessful()
+                } else
+                    callback.onActivityRecordDeleteFailure(DeleteActivityRecordsError())
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                callback.onActivityRecordDeleteFailure(t)
+            }
+        })
+    }
 
 }
