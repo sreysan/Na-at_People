@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.view.contract.NewsEvents
+import com.google.android.gms.common.data.DataHolder
+
 
 class NewsAdapter(var news: MutableList<News>, private val listener: NewsEvents) :
     RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
+    private val originalList = news
+    private var lastSearchSize = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -34,6 +38,29 @@ class NewsAdapter(var news: MutableList<News>, private val listener: NewsEvents)
 
     override fun getItemCount(): Int {
         return news.size
+    }
+
+    fun updateList(list: MutableList<News>) {
+        news = list
+        notifyDataSetChanged()
+    }
+
+    fun filter(text: String) {
+        val temp: MutableList<News> = ArrayList()
+
+        if (text.length < lastSearchSize) {
+            news = originalList
+        }
+        for (d in news) {
+            //or use .equal(text) with you want equal match
+            //use .toLowerCase() for better matches
+            if (d.title.lowercase().contains(text.lowercase())) {
+                temp.add(d)
+            }
+        }
+        //update recyclerview
+        this.updateList(temp)
+        lastSearchSize = text.length
     }
 
 

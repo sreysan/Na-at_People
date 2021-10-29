@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view_news_item"
     android:layout_width="match_parent"
     android:layout_height="124dp"
@@ -41,8 +40,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/nunito_sans"
-                android:text="TextView"
+                android:lines="1"
+                android:maxLines="1"
                 android:textColor="@color/black_333333"
                 android:textSize="16sp" />
 
@@ -52,9 +53,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/nunito_sans"
-                android:text="TextView"
                 android:textColor="@color/gray_9B9B9B"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/text_view_summary"
@@ -65,7 +65,6 @@
                 android:fontFamily="@font/nunito_sans"
                 android:lines="2"
                 android:maxLines="2"
-                android:text="Lorem ipsum dolor sit amet consectetur adipiscing elit aliquam, praesent litora , Lorem ipsum dolor sit amet consectetur adipiscing elit aliquam, praesent litora     "
                 android:textColor="@color/gray_9B9B9B"
                 android:textSize="12sp" />
 

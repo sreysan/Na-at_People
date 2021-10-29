@@ -43,5 +43,6 @@
     <string name="label_register_total_hour">Registrar %d hora en el día</string>
     <string name="label_register_total_hours">Registrar %d horas en el día</string>
     <string name="label_char">|</string>
+    <string name="hint_search_news">Buscar noticia</string>
 
 </resources>
