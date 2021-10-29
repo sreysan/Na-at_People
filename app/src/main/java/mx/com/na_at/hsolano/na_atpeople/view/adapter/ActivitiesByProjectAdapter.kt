@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
-import mx.com.na_at.hsolano.na_atpeople.model.network.response.Activity
+import mx.com.na_at.hsolano.na_atpeople.model.Activity
 
 class ActivitiesByProjectAdapter(private val list: List<Activity>) :
     RecyclerView.Adapter<ActivitiesByProjectAdapter.ViewHolder>() {
@@ -35,7 +35,7 @@ class ActivitiesByProjectAdapter(private val list: List<Activity>) :
         if (position == (list.size - 1)) {
             holder.divider.visibility = View.GONE
         }
-        holder.tvName.text = currentActivity.activity.name
+        holder.tvName.text = currentActivity.name
         holder.tvHours.text = context.getString(R.string.template_hrs, currentActivity.duration)
     }
 

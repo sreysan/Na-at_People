@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.ActivityRecords
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.view.contract.ActivityRecordsListener
 
 class ActivityRecordsAdapter(
-    var list: List<ActivityRecordResponse>,
-    private val listener: ActivityRecordsListener
+    private var activityRecords: List<ActivityRecords>
 ) :
     RecyclerView.Adapter<ActivityRecordsAdapter.ViewHolder>() {
     private lateinit var context: Context
@@ -37,14 +37,8 @@ class ActivityRecordsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentProject = list[position]
+        val currentProject = activityRecords[position]
         holder.tvName.text = currentProject.project.name
-        holder.tvModifyProject.setOnClickListener {
-            listener.onClickActivityRecordsModify(currentProject.activities)
-        }
-        holder.tvDeleteProject.setOnClickListener {
-            listener.onClickActivityRecordsDelete(currentProject.project.name, "")
-        }
         holder.rvActivitiesByProject.layoutManager = LinearLayoutManager(context)
         holder.rvActivitiesByProject.adapter =
             ActivitiesByProjectAdapter(currentProject.activities)
@@ -52,6 +46,6 @@ class ActivityRecordsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return activityRecords.size
     }
 }

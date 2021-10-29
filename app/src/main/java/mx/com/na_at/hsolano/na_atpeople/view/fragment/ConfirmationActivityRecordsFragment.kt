@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -20,12 +21,12 @@ import mx.com.na_at.hsolano.na_atpeople.view.contract.NetworkCallback
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityModelFactory
 import mx.com.na_at.hsolano.na_atpeople.viewmodel.RegisterActivityViewModel
 
-class SummaryActivityRecordsFragment : Fragment(), ActivityRecordsListener {
+class ConfirmationActivityRecordsFragment : Fragment(), ActivityRecordsListener {
 
     private lateinit var rvTotalProjects: RecyclerView
     private lateinit var tvTotalHours: TextView
     private lateinit var tvAddProject: TextView
-    private lateinit var llFinish: LinearLayout
+    private lateinit var buttonRegisterHours: Button
     private lateinit var viewModel: RegisterActivityViewModel
 
     override fun onCreateView(
@@ -36,15 +37,39 @@ class SummaryActivityRecordsFragment : Fragment(), ActivityRecordsListener {
         return inflater.inflate(R.layout.fragment_activity_records_summary, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as HomeActivity).hideProjectTab()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         tvTotalHours = view.findViewById(R.id.text_view_hours_worked)
         tvAddProject = view.findViewById(R.id.text_view_add_more_projects)
-        llFinish = view.findViewById(R.id.layout_finish)
+        buttonRegisterHours = view.findViewById(R.id.button_register_hours)
+
+        buttonRegisterHours.setOnClickListener {
+            viewModel.registerActivityRecord()
+        }
+
+        val templateId =
+            if (HomeActivity.registerEntity.totalHours > 1) R.string.label_register_total_hours
+            else R.string.label_register_total_hour
+
+        buttonRegisterHours.text = getString(templateId, HomeActivity.registerEntity.totalHours)
 
         rvTotalProjects = view.findViewById(R.id.recycle_view_total_projects)
         rvTotalProjects.layoutManager = LinearLayoutManager(activity)
+        rvTotalProjects.adapter =
+            ActivityRecordsAdapter(HomeActivity.registerEntity.activityRecords)
+
+
+        tvTotalHours.text =
+            getString(R.string.template_hours, HomeActivity.registerEntity.totalHours)
+
+
+
 
         context?.let {
             val repository = RegisterActivityRepository(it)
@@ -54,8 +79,6 @@ class SummaryActivityRecordsFragment : Fragment(), ActivityRecordsListener {
                 RegisterActivityModelFactory(repository)
             ).get(RegisterActivityViewModel::class.java)
         }
-
-        viewModel.requestGetActivityRecords()
 
         viewModel.isLoading.observe(viewLifecycleOwner, {
             if (it) (activity as HomeActivity).showLoader()
@@ -70,23 +93,12 @@ class SummaryActivityRecordsFragment : Fragment(), ActivityRecordsListener {
             })
         })
 
-
-        viewModel.activityRecords.observe(viewLifecycleOwner, { listProjects ->
-            rvTotalProjects.adapter = ActivityRecordsAdapter(listProjects, this)
-        })
-
-
-        (activity as HomeActivity).navigationController.popBackStack()
-        (activity as HomeActivity).navigationController.popBackStack()
-        (activity as HomeActivity).navigationController.popBackStack()
-
     }
 
     override fun onClickActivityRecordsDelete(nameProjectRecord: String, idActivityRecord: String) {
     }
 
     override fun onClickActivityRecordsModify(activities: List<Activity>) {
-        (activity as HomeActivity).navigationController.popBackStack()
-        (activity as HomeActivity).navigateToFragment(R.id.activitiesFragment)
+
     }
 }

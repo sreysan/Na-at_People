@@ -54,5 +54,12 @@ class DateUtils {
             }
             return "$dayOfWeek $day de $month"
         }
+
+        fun getDateServerFormatted(calendar: Calendar): String {
+            val year = calendar[Calendar.YEAR]
+            val month = calendar[Calendar.MONTH].toString()
+            val day = calendar[Calendar.DAY_OF_MONTH]
+            return "$year-$month-$day"
+        }
     }
 }

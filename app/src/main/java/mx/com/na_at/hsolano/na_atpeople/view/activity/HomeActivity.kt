@@ -19,6 +19,10 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import mx.com.na_at.hsolano.na_atpeople.App
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.ActivityRecords
+import mx.com.na_at.hsolano.na_atpeople.model.Client
+import mx.com.na_at.hsolano.na_atpeople.model.Project
+import mx.com.na_at.hsolano.na_atpeople.model.Register
 import mx.com.na_at.hsolano.na_atpeople.model.database.entity.Notification
 import mx.com.na_at.hsolano.na_atpeople.model.repository.NotificationsRepositoryImpl
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
@@ -48,10 +52,19 @@ class HomeActivity : AppCompatActivity() {
     lateinit var ivUserImage: ImageView
     private lateinit var loaderContainer: LinearLayout
 
+    companion object {
+        var registerEntity = Register()
+        val client = Client()
+        val project = Project()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        val activityRecords = ActivityRecords(client, project)
+        registerEntity.activityRecords.add(activityRecords)
 
         navigationView = findViewById(R.id.bottomNavigationView)
         navigationController = findNavController(R.id.fragment_navigation_host)
@@ -77,7 +90,9 @@ class HomeActivity : AppCompatActivity() {
         ivUserImage = findViewById(R.id.image_view_photo)
         ivUserImage.clipToOutline = true
 
-        val photoUrl = if (App.getPhotoUrl().isBlank()) intent.getStringExtra(KEY_URL_PHOTO) else App.getPhotoUrl()
+        val photoUrl = if (App.getPhotoUrl()
+                .isBlank()
+        ) intent.getStringExtra(KEY_URL_PHOTO) else App.getPhotoUrl()
         Glide.with(this).load(photoUrl).into(ivUserImage)
 
         tvChangeClients.setOnClickListener {
@@ -120,6 +135,9 @@ class HomeActivity : AppCompatActivity() {
         viewModel.olderDay.observe(this, {
             tvTabDate.text = it
         })
+        viewModel.dayToRegister.observe(this, {
+            registerEntity.date = it
+        })
 
         val tvLogout = findViewById<TextView>(R.id.text_view_logout)
         tvLogout.setOnClickListener {
@@ -157,6 +175,10 @@ class HomeActivity : AppCompatActivity() {
     fun showTabRegisterDate() {
         dateTabLayout.visibility = View.VISIBLE
         clientTabLayout.visibility = View.VISIBLE
+    }
+
+    fun hideProjectTab() {
+        clientTabLayout.visibility = View.GONE
     }
 
     fun hideInfoTabs() {

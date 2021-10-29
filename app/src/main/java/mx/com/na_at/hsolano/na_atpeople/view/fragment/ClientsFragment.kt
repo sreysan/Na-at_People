@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mx.com.na_at.hsolano.na_atpeople.R
+import mx.com.na_at.hsolano.na_atpeople.model.ActivityRecords
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_ID
 import mx.com.na_at.hsolano.na_atpeople.util.Constants.CLIENT_NAME
@@ -83,6 +84,13 @@ class ClientsFragment : Fragment(), RegisterActivityEvents {
         val activity = (activity as HomeActivity)
         activity.bundle.putString(CLIENT_ID, item.first)
         activity.bundle.putString(CLIENT_NAME, item.second)
+
+        val currentItem = HomeActivity.registerEntity.activityRecords.size -1
+
+        HomeActivity.registerEntity.activityRecords[currentItem].client.id = item.first
+        HomeActivity.registerEntity.activityRecords[currentItem].client.name = item.second
+
+
         activity.navigateToFragment(R.id.action_clientsFragment_to_projectsFragment)
     }
 

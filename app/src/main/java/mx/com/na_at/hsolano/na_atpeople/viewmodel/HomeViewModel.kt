@@ -14,6 +14,7 @@ class HomeViewModel(private val repository: RegisterActivityRepository) :
     val emptyDays = MutableLiveData<Boolean>()
     val days = MutableLiveData<Int>()
     val olderDay = MutableLiveData<String>()
+    val dayToRegister = MutableLiveData<String>()
 
     fun requestGetActivityRecords() {
 
@@ -57,5 +58,6 @@ class HomeViewModel(private val repository: RegisterActivityRepository) :
         }
         calendars.add(currentCalendar)
         olderDay.postValue(DateUtils.getDateFormatted(calendars.first()))
+        dayToRegister.postValue(DateUtils.getDateServerFormatted(calendars.first()))
     }
 }

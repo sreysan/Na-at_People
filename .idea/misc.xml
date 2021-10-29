@@ -21,14 +21,12 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.16485507246376813" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21240942028985507" />
         <entry key="app/src/main/res/layout/card_view_activities_item.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/card_view_activity_by_project.xml" value="0.1585144927536232" />
-        <entry key="app/src/main/res/layout/card_view_activity_records_summary.xml" value="0.1585144927536232" />
         <entry key="app/src/main/res/layout/card_view_notification.xml" value="0.259963768115942" />
         <entry key="app/src/main/res/layout/card_view_register_activity_item.xml" value="0.1887531492398743" />
         <entry key="app/src/main/res/layout/cardview_news_item.xml" value="0.5" />
         <entry key="app/src/main/res/layout/cardview_news_item_.xml" value="0.4331355635488307" />
         <entry key="app/src/main/res/layout/fragment_activities.xml" value="0.27898550724637683" />
-        <entry key="app/src/main/res/layout/fragment_activity_records_summary.xml" value="0.1585144927536232" />
+        <entry key="app/src/main/res/layout/fragment_activity_records_summary.xml" value="0.29351548853332965" />
         <entry key="app/src/main/res/layout/fragment_clients.xml" value="0.2078426625752015" />
         <entry key="app/src/main/res/layout/fragment_news.xml" value="0.27898550724637683" />
         <entry key="app/src/main/res/layout/fragment_news_detail.xml" value="0.1" />

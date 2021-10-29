@@ -2,6 +2,7 @@ package mx.com.na_at.hsolano.na_atpeople.model.repository
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.RegisterActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.request.UpdateActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
@@ -41,7 +42,7 @@ class RegisterActivityRepository(context: Context) : HomeRepository(context) {
 
     fun getProjectsByClientId(id: String, callback: GetProjectsByClientIdCallback) {
         val result: Call<List<RegisterObjectResponse>> =
-            ApiClient.buildApiService("https://demo7683580.mockable.io/").getProjectsByIdClient(id)
+            ApiClient.buildApiService(DEVELOP_SERVER).getProjectsByIdClient(id)
 
         result.enqueue(object : Callback<List<RegisterObjectResponse>> {
             override fun onResponse(
@@ -153,6 +154,31 @@ class RegisterActivityRepository(context: Context) : HomeRepository(context) {
 
             override fun onFailure(call: Call<Unit>, t: Throwable) {
                 callback.onActivityRecordDeleteFailure(t)
+            }
+        })
+    }
+
+
+    fun requestRegisterActivityRecordsByProject(
+        request: RegisterActivityRecordsRequest,
+        callback: RegisterActivityRecordsCallback
+    ) {
+        val result =
+            ApiClient.buildApiService(DEVELOP_SERVER).registerActivityRecordsByProject(request)
+
+        result.enqueue(object : Callback<Unit> {
+            override fun onResponse(
+                call: Call<Unit>,
+                response: Response<Unit>
+            ) {
+                if (response.isSuccessful) {
+                    callback.onRegisterActivityRecordsSuccessful()
+                } else
+                    callback.onRegisterActivityRecordsFailure(RegisterActivityRecordsError())
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                callback.onRegisterActivityRecordsFailure(t)
             }
         })
     }

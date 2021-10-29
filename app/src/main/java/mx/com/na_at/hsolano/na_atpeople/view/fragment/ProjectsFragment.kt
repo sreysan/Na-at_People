@@ -93,6 +93,13 @@ class ProjectsFragment : Fragment(), RegisterActivityEvents {
         val activity = (activity as HomeActivity)
         activity.bundle.putString(PROJECT_ID, item.first)
         activity.bundle.putString(PROJECT_NAME, item.second)
+
+        val currentItem = HomeActivity.registerEntity.activityRecords.size -1
+
+        HomeActivity.registerEntity.activityRecords[currentItem].project.id = item.first
+        HomeActivity.registerEntity.activityRecords[currentItem].project.name = item.second
+
+
         activity.navigateToFragment(R.id.action_projectsFragment_to_activitiesFragment)
     }
 }

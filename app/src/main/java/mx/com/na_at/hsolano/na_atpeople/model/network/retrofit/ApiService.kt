@@ -3,6 +3,7 @@ package mx.com.na_at.hsolano.na_atpeople.model.network.retrofit
 import mx.com.na_at.hsolano.na_atpeople.model.News
 import mx.com.na_at.hsolano.na_atpeople.model.NewsDetail
 import mx.com.na_at.hsolano.na_atpeople.model.network.request.LoginRequest
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.RegisterActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.request.UpdateActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.LoginResponse
@@ -40,5 +41,7 @@ interface ApiService {
     fun updateActivityRecords(@Path("id") id: String, @Body body: UpdateActivityRecordsRequest)
             : Call<Unit>
 
+    @POST("activity-records")
+    fun registerActivityRecordsByProject(@Body request: RegisterActivityRecordsRequest): Call<Unit>
 
 }

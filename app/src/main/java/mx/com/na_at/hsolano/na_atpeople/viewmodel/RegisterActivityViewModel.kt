@@ -1,12 +1,16 @@
 package mx.com.na_at.hsolano.na_atpeople.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import mx.com.na_at.hsolano.na_atpeople.model.Activity
 import mx.com.na_at.hsolano.na_atpeople.model.ActivityHour
+import mx.com.na_at.hsolano.na_atpeople.model.network.request.RegisterActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.request.UpdateActivityRecordsRequest
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.ActivityRecordResponse
 import mx.com.na_at.hsolano.na_atpeople.model.network.response.RegisterObjectResponse
 import mx.com.na_at.hsolano.na_atpeople.model.repository.RegisterActivityRepository
+import mx.com.na_at.hsolano.na_atpeople.view.activity.HomeActivity
 import mx.com.na_at.hsolano.na_atpeople.view.contract.*
 
 class RegisterActivityViewModel(private val repository: RegisterActivityRepository) : ViewModel() {
@@ -26,6 +30,9 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
     var isConnected = MutableLiveData<Boolean>()
 
     var wasActivityRecordsModified = MutableLiveData<Boolean>()
+
+    private val totalActivities = mutableListOf<ActivityHour>()
+
 
     private fun isConnectedToInternet(): Boolean {
         val isOnline = repository.isConnectedToInternet()
@@ -189,6 +196,7 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
                 updateStateButtons()
             }
         }
+        activity.value?.let { addActivityIfIsValid(it) }
     }
 
     fun lessHours() {
@@ -199,7 +207,7 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
                 updateStateButtons()
             }
         }
-
+        activity.value?.let { addActivityIfIsValid(it) }
     }
 
     private fun getParListFromResponse(values: List<RegisterObjectResponse>): List<Pair<String, String>> {
@@ -208,5 +216,68 @@ class RegisterActivityViewModel(private val repository: RegisterActivityReposito
             pairList.add(Pair(item.id, item.name))
         }
         return pairList
+    }
+
+
+    private fun addActivityIfIsValid(activityHour: ActivityHour) {
+        if (activityHour.hours > 0 && totalHours <= 24 && HomeActivity.registerEntity.totalHours <= 24) {
+            totalActivities.add(activityHour)
+        }
+    }
+
+    fun addAllActivities(allActivities: List<ActivityHour>) {
+        val currentItem = HomeActivity.registerEntity.activityRecords.size - 1
+        HomeActivity.registerEntity.activityRecords[currentItem].activities.clear()
+        for (activity in allActivities) {
+            if (activity.hours > 0) {
+                HomeActivity.registerEntity.activityRecords[currentItem].activities.add(
+                    Activity(
+                        activity.id,
+                        activity.name,
+                        activity.hours
+                    )
+                )
+                HomeActivity.registerEntity.totalHours += activity.hours
+            }
+        }
+    }
+
+    fun registerActivityRecord() {
+
+        val currentItem = HomeActivity.registerEntity.activityRecords.size - 1
+        val date = HomeActivity.registerEntity.date
+        val projectId = HomeActivity.registerEntity.activityRecords[currentItem].project.id
+
+        val activities =
+            mutableListOf<mx.com.na_at.hsolano.na_atpeople.model.network.request.Activity>()
+
+        for (activity in HomeActivity.registerEntity.activityRecords[currentItem].activities) {
+            activities.add(
+                mx.com.na_at.hsolano.na_atpeople.model.network.request.Activity(
+                    activity.id,
+                    activity.duration
+                )
+            )
+        }
+
+        val request = RegisterActivityRecordsRequest(projectId, activities, date)
+
+        if (!isConnectedToInternet())
+            return
+
+        isLoading.value = true
+        repository.requestRegisterActivityRecordsByProject(
+            request,
+            object : RegisterActivityRecordsCallback {
+                override fun onRegisterActivityRecordsSuccessful() {
+                    isLoading.value = false
+                    Log.d(RegisterActivityViewModel::class.java.name, "Exitoooo")
+                }
+
+                override fun onRegisterActivityRecordsFailure(t: Throwable) {
+                    isLoading.value = false
+                    Log.d(RegisterActivityViewModel::class.java.name, "A dormir")
+                }
+            })
     }
 }

@@ -31,7 +31,6 @@ interface GetActivityRecordsCallback {
     fun onGetActivityRecordsFailure(error: Throwable)
 }
 
-
 interface UpdateActivityRecordsCallback {
     fun onActivityRecordUpdateSuccessful()
     fun onActivityRecordUpdateFailure(throwable: Throwable)
@@ -42,6 +41,11 @@ interface DeleteActivityRecordsCallback {
     fun onActivityRecordDeleteFailure(throwable: Throwable)
 }
 
+
+interface RegisterActivityRecordsCallback {
+    fun onRegisterActivityRecordsSuccessful()
+    fun onRegisterActivityRecordsFailure(t: Throwable)
+}
 
 class GetClientsError : Throwable()
 
@@ -55,3 +59,4 @@ class DeleteActivityRecordsError : Throwable()
 
 class UpdateActivityRecordsError : Throwable()
 
+class RegisterActivityRecordsError : Throwable()

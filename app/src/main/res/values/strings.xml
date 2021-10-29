@@ -40,6 +40,8 @@
     <string name="label_modify"><u>Modificar</u></string>
     <string name="label_add_more_hours"><u>Agregar más horas en otro proyecto</u></string>
     <string name="label_hours_worked_day">Horas trabajadas en el día:</string>
+    <string name="label_register_total_hour">Registrar %d hora en el día</string>
+    <string name="label_register_total_hours">Registrar %d horas en el día</string>
     <string name="label_char">|</string>
 
 </resources>

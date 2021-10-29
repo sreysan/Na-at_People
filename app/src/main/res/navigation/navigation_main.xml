@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/summaryActivityRecordsFragment"
-        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.SummaryActivityRecordsFragment"
+        android:name="mx.com.na_at.hsolano.na_atpeople.view.fragment.ConfirmationActivityRecordsFragment"
         android:label="fragment_activity_records_summary"
         tools:layout="@layout/fragment_activity_records_summary" />
 </navigation>

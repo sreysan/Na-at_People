@@ -62,7 +62,7 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
             )
         }
 
-        val activities = mutableListOf<ActivityHour>()
+        var activities = mutableListOf<ActivityHour>()
         val adapter = ActivitiesAdapter(activities, this)
         recyclerViewActivities.adapter = adapter
 
@@ -77,6 +77,7 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
         })
 
         viewModel.activities.observe(viewLifecycleOwner, {
+            activities.clear()
             activities.addAll(it)
             adapter.notifyDataSetChanged()
         })
@@ -98,7 +99,8 @@ class ActivitiesFragment : Fragment(), ActivitiesHoursEvents {
         })
 
         buttonContinue.setOnClickListener {
-            (activity as HomeActivity).navigateToFragment(R.id.summaryActivityRecordsFragment)
+            viewModel.addAllActivities(activities)
+            (activity as HomeActivity).navigateToFragment(R.id.action_activitiesFragment_to_summaryActivityRecordsFragment)
         }
     }
 
